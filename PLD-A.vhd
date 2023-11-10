@@ -3,16 +3,19 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.numeric_std.all;
 
+-- The following state machine was produced for a class project in Digital Logic Design at Kennesaw State University under the supervision of Dr. Lance Crimm. 
+-- This state machine has seven states that are determined by the current output state and the current inputs. The primary factors that cause state changes are the number of cars present at each "intersection" (given by a logic level low or high) and the time spent at each intersection (given by the counter bits A through D). The comments after each conditional statement describe the scenario the statement describes and the states are separated by commenting (i.e.,  -- 120 Green (Default) ---- ).
+
 entity Main is 
 	port (
-		CLK:	in		std_logic;
-		M:		in		std_logic;
-		H:		in		std_logic;
-		D:		in		std_logic;
-		C:		in		std_logic;
-		B:		in		std_logic;
-		A:		in		std_logic; 
-		Q:		buffer	std_logic_vector (7 downto 0)); 
+		CLK:		in		std_logic;			-- clock input
+		M:		in		std_logic; 			-- Miller car counter over necessary car count
+		H:		in		std_logic;			-- Highway 120 car counter over necessary car count
+		D:		in		std_logic;			-- main counter bit D
+		C:		in		std_logic;			-- main counter bit C
+		B:		in		std_logic; 			-- main counter bit B
+		A:		in		std_logic; 			-- main counter bit A
+		Q:		buffer	std_logic_vector (7 downto 0)); 	-- output vector for light conditions
 end Main; 
 
 architecture Traffic of Main is
@@ -31,7 +34,7 @@ begin
 			-- 120 Yellow -----------------------------------------------------------------------------------------------
 			when "01000001" => if ((not B and not C) and not D) = '1' then Q <= "01000001"; 
 				-- (time < 2)
-				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety
+				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety state
 				-- (time >= 2)
 				end if; 
 				
@@ -56,7 +59,7 @@ begin
 			-- 120 Turn Yellow -----------------------------------------------------------------------------------------------
 			when "10010001" => if ((not B and not C) and not D) = '1' then Q <= "10010001"; 
 				-- (time < 2)
-				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety
+				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety state
 				-- (time >= 2)
 				end if; 
 				
@@ -70,7 +73,7 @@ begin
 			-- Miller Yellow -----------------------------------------------------------------------------------------------
 			when "10000010" => if ((not B and not C) and not D) = '1' then Q <= "10000010"; 
 				-- (time < 2)
-				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety 
+				elsif ((B or C) or D) = '1' then Q <= "10000001"; -- safety state
 				-- (time >=2)
 				end if; 
 			-- protection -----------------------------------------------------------------------------------------------
